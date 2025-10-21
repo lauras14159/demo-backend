@@ -1,47 +1,22 @@
-// const mongoose = require("mongoose");
-
-// // Your full connection string (replace password if needed)
-// const url =
-//   "mongodb+srv://laura:6lGSibBw7MkRoXuT@cluster0.a5qfl.mongodb.net/noteApp?retryWrites=true&w=majority";
-
-// mongoose.set("strictQuery", false);
-
-// mongoose
-//   .connect(url)
-//   .then(() => {
-//     console.log("✅ Connected to MongoDB successfully!");
-//     return mongoose.connection.db.listCollections().toArray(); // list collections
-//   })
-//   .then((collections) => {
-//     console.log(
-//       "Collections in database:",
-//       collections.map((c) => c.name)
-//     );
-//     mongoose.connection.close();
-//   })
-//   .catch((err) => {
-//     console.error("❌ MongoDB connection error:", err.message);
-//   });
+// mongo.js
 const mongoose = require("mongoose");
 
-const url =
-  "mongodb+srv://laura:6lGSibBw7MkRoXuT@cluster0.3y7serw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = process.env.MONGODB_URI;
 
-mongoose.set("strictQuery", false);
-
+// Connect using Mongoose
 mongoose
-  .connect(url)
-  .then(() => {
-    console.log("✅ Connected to MongoDB!");
-    return mongoose.connection.db.listCollections().toArray();
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   })
-  .then((cols) => {
-    console.log(
-      "Collections:",
-      cols.map((c) => c.name)
-    );
-    return mongoose.connection.close();
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err.message);
-  });
+  .then(() => console.log("✅ Connected to MongoDB via Mongoose"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// Define the schema
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+});
+
+// Export the model
+module.exports = mongoose.model("Note", noteSchema, "demo");
